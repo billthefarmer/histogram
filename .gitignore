@@ -8,6 +8,9 @@
 # Java class files
 *.class
 
+# Emacs backups
+*~
+
 # Generated files
 bin/
 gen/
