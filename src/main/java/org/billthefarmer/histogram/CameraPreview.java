@@ -71,6 +71,7 @@ public class CameraPreview extends SurfaceView
         try
         {
             camera.setPreviewDisplay(holder);
+	    camera.setPreviewCallback(histogram);
             camera.startPreview();
         }
 
@@ -124,12 +125,18 @@ public class CameraPreview extends SurfaceView
 	camera.setParameters(cameraParams);
 
 	Camera.Size size = cameraParams.getPreviewSize();
-        FrameLayout.LayoutParams params =
-	    (FrameLayout.LayoutParams) getLayoutParams();
-        params.height = w * size.width / size.height; // portrait mode only
-	params.gravity = Gravity.CENTER_VERTICAL;
+        FrameLayout.LayoutParams params;
+
+        params = (FrameLayout.LayoutParams) getLayoutParams();
+        int height = w * size.width / size.height;
+
+        params.height = height;
+	params.gravity = Gravity.TOP;
         setLayoutParams(params);
 
+        params = (FrameLayout.LayoutParams) histogram.getLayoutParams();
+        params.height = h - height;
+        params.gravity = Gravity.BOTTOM;
 	histogram.setLayoutParams(params);
 
         // start preview with new settings

@@ -92,8 +92,7 @@ public class Converter
 	    rgbIn = Allocation.createTyped(rs, rgbaType.create());
 
 	    Type.Builder uintType = new Type.Builder(rs, Element.U32(rs))
-		.setX(256)
-		.setY(0);
+		.setX(256);
 	    intOut = Allocation.createTyped(rs, uintType.create());
             hist = new int[256];
         }
