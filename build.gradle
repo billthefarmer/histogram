@@ -16,7 +16,3 @@ android {
         abortOnError false
     }
 }
-
-// tasks.withType(JavaCompile) {
-//     options.compilerArgs << '-Xlint:deprecation'  
-// }
