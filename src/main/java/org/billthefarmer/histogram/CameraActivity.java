@@ -28,6 +28,7 @@ import android.hardware.Camera;
 import android.media.MediaActionSound;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -38,6 +39,8 @@ import android.widget.FrameLayout;
 public class CameraActivity extends Activity
 {
     static final private String TAG = "CameraActivity";
+
+    static final private String ID = "id";
 
     private int id;
     private Camera camera;
@@ -57,6 +60,9 @@ public class CameraActivity extends Activity
         ViewGroup parent = (ViewGroup) preview.getParent();
         parent.addView(histogram);
 	preview.setHistogramView(histogram);
+
+        if (savedInstanceState != null)
+            id = savedInstanceState.getInt(ID);
     }
 
     @Override
@@ -66,9 +72,6 @@ public class CameraActivity extends Activity
 
         // Create an instance of Camera
         camera = Camera.open(id);
-
-	// Orient the camera
-    	// camera.setDisplayOrientation(90);
 
 	// Set preview camera
 	preview.setCamera(camera);
@@ -107,5 +110,41 @@ public class CameraActivity extends Activity
 
 	    catch (Exception e) {}
 	}
+    }
+
+    // onSaveInstanceState
+    @Override
+    public void onSaveInstanceState (Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ID, id);
+    }
+
+    public boolean onTouchEvent (MotionEvent event)
+    {
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN)
+        {
+            int width = histogram.getWidth();
+            float x = event.getX();
+
+            if (x < width / 2)
+            {
+                int cameras = camera.getNumberOfCameras();
+                id = (id + 1) % cameras;
+                recreate();
+            }
+
+            else
+            {
+                if (histogram.getVisibility() == View.VISIBLE)
+                    histogram.setVisibility(View.INVISIBLE);
+
+                else
+                    histogram.setVisibility(View.VISIBLE);
+            }
+        }
+
+        return true;
     }
 }

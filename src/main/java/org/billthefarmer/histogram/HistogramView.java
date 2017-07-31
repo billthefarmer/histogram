@@ -118,7 +118,7 @@ public class HistogramView extends View
                 break;
 
             case 3:
-                paint.setColor(Color.GRAY);
+                paint.setColor(Color.WHITE);
                 break;
            }
 
