@@ -91,7 +91,7 @@ public class Converter
 		.setY(height);
 	    rgbIn = Allocation.createTyped(rs, rgbaType.create());
 
-	    Type.Builder uintType = new Type.Builder(rs, Element.U32_4(rs))
+	    Type.Builder uintType = new Type.Builder(rs, Element.U32_3(rs))
 		.setX(256);
 	    intOut = Allocation.createTyped(rs, uintType.create());
             hist = new int[256 * 4];

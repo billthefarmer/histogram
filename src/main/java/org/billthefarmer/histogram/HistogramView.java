@@ -53,7 +53,7 @@ public class HistogramView extends View
 
     private int width;
     private int height;
-    private int max;
+    private long max;
 
     private int[] histogram;
 
@@ -81,12 +81,10 @@ public class HistogramView extends View
     @Override
     public void onDraw(Canvas canvas)
     {
-        canvas.drawColor(Color.BLACK);
-
         if (histogram == null)
             return;
 
-        paint.setColor(Color.GREEN);
+        // paint.setAntiAlias(true);
         paint.setStrokeWidth(width / histogram.length);
 
         float xscale = (float)width / histogram.length;
@@ -96,30 +94,33 @@ public class HistogramView extends View
         int max = 0;
         for (int h: histogram)
         {
+            if ((x < 3) || (x > (histogram.length - 5)))
+            {
+                x++;
+                continue;
+            }
+
             if (max < h)
                 max = h;
 
             switch (x % 4)
             {
             case 0:
-                paint.setColor(Color.GRAY);
-                break;
-
-            case 1:
                 paint.setColor(Color.RED);
                 break;
 
-            case 2:
+            case 1:
                 paint.setColor(Color.GREEN);
                 break;
 
-            case 3:
+            case 2:
                 paint.setColor(Color.BLUE);
                 break;
-            }
 
-            // if (x == 0 || x == (histogram.length - 1))
-            //     continue;
+            case 3:
+                paint.setColor(Color.GRAY);
+                break;
+           }
 
             canvas.drawLine(x * xscale, height,
                             x * xscale, height - h * yscale, paint);

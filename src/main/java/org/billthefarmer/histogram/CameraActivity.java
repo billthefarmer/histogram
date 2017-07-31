@@ -68,7 +68,7 @@ public class CameraActivity extends Activity
         camera = Camera.open(id);
 
 	// Orient the camera
-    	camera.setDisplayOrientation(90);
+    	// camera.setDisplayOrientation(90);
 
 	// Set preview camera
 	preview.setCamera(camera);

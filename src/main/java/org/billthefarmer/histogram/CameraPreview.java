@@ -128,16 +128,15 @@ public class CameraPreview extends SurfaceView
         FrameLayout.LayoutParams params;
 
         params = (FrameLayout.LayoutParams) getLayoutParams();
-        int height = w * size.width / size.height;
+        int width = w * size.height / size.width;
 
-        params.height = height;
-	params.gravity = Gravity.TOP;
+        params.width = width;
+	params.gravity = Gravity.CENTER;
         setLayoutParams(params);
 
-        params = (FrameLayout.LayoutParams) histogram.getLayoutParams();
-        params.height = h - height;
-        params.gravity = Gravity.BOTTOM;
-	histogram.setLayoutParams(params);
+        // params = (FrameLayout.LayoutParams) histogram.getLayoutParams();
+        // params.gravity = Gravity.BOTTOM;
+	// histogram.setLayoutParams(params);
 
         // start preview with new settings
         try
