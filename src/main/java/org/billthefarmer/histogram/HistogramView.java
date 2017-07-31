@@ -84,7 +84,6 @@ public class HistogramView extends View
         if (histogram == null)
             return;
 
-        // paint.setAntiAlias(true);
         paint.setStrokeWidth(width / histogram.length);
 
         float xscale = (float)width / histogram.length;
@@ -94,7 +93,7 @@ public class HistogramView extends View
         int max = 0;
         for (int h: histogram)
         {
-            if ((x < 3) || (x > (histogram.length - 5)))
+            if ((x < 4) || (x > (histogram.length - 5)))
             {
                 x++;
                 continue;

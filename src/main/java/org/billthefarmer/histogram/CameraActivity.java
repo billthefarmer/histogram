@@ -78,10 +78,8 @@ public class CameraActivity extends Activity
 
 	preview
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                                   View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                                    View.SYSTEM_UI_FLAG_LOW_PROFILE |
                                    View.SYSTEM_UI_FLAG_FULLSCREEN);
-
         try
         {
             camera.startPreview();

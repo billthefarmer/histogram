@@ -134,10 +134,6 @@ public class CameraPreview extends SurfaceView
 	params.gravity = Gravity.CENTER;
         setLayoutParams(params);
 
-        // params = (FrameLayout.LayoutParams) histogram.getLayoutParams();
-        // params.gravity = Gravity.BOTTOM;
-	// histogram.setLayoutParams(params);
-
         // start preview with new settings
         try
         {
