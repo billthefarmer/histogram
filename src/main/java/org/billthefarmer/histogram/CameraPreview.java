@@ -24,6 +24,7 @@
 package org.billthefarmer.histogram;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.Gravity;
@@ -114,6 +115,8 @@ public class CameraPreview extends SurfaceView
         // set preview size and make any resize, rotate or
         // reformatting changes here
 
+        Configuration config = getResources().getConfiguration();
+
 	Camera.Parameters cameraParams = camera.getParameters();
 
 	List<String> modes = cameraParams.getSupportedFocusModes();
@@ -125,14 +128,30 @@ public class CameraPreview extends SurfaceView
 	camera.setParameters(cameraParams);
 
 	Camera.Size size = cameraParams.getPreviewSize();
-        FrameLayout.LayoutParams params;
+        FrameLayout.LayoutParams params =
+            (FrameLayout.LayoutParams) getLayoutParams();
 
-        params = (FrameLayout.LayoutParams) getLayoutParams();
-        int width = w * size.height / size.width;
+        switch (config.orientation)
+        {
+        case Configuration.ORIENTATION_PORTRAIT:
+            params.height = w * size.width / size.height;
+            params.gravity = Gravity.TOP;
+            setLayoutParams(params);
 
-        params.width = width;
-	params.gravity = Gravity.CENTER;
-        setLayoutParams(params);
+            int height = params.height;
+            params = (FrameLayout.LayoutParams)
+                histogram.getLayoutParams();
+            params.height = h - height;
+            params.gravity = Gravity.BOTTOM;
+            histogram.setLayoutParams(params);
+            break;
+
+        case Configuration.ORIENTATION_LANDSCAPE:
+            params.width = w * size.height / size.width;
+            params.gravity = Gravity.CENTER;
+            setLayoutParams(params);
+            break;
+        }
 
         // start preview with new settings
         try

@@ -24,6 +24,7 @@
 package org.billthefarmer.histogram;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.media.MediaActionSound;
 import android.os.Bundle;
@@ -73,6 +74,16 @@ public class CameraActivity extends Activity
         // Create an instance of Camera
         camera = Camera.open(id);
 
+        Configuration config = getResources().getConfiguration();
+
+        switch (config.orientation)
+        {
+        case Configuration.ORIENTATION_PORTRAIT:
+            // Orient the camera
+            camera.setDisplayOrientation(90);
+            break;
+        }
+
 	// Set preview camera
 	preview.setCamera(camera);
 
@@ -120,27 +131,55 @@ public class CameraActivity extends Activity
 
     public boolean onTouchEvent (MotionEvent event)
     {
+        Configuration config = getResources().getConfiguration();
+
         int action = event.getAction();
         if (action == MotionEvent.ACTION_DOWN)
         {
-            int width = histogram.getWidth();
-            float x = event.getX();
-
-            if (x < width / 2)
+            switch (config.orientation)
             {
-                int cameras = camera.getNumberOfCameras();
-                id = (id + 1) % cameras;
-                recreate();
-            }
+            case Configuration.ORIENTATION_PORTRAIT:
+                int height = preview.getHeight();
+                float y = event.getY();
 
-            else
-            {
-                if (histogram.getVisibility() == View.VISIBLE)
-                    histogram.setVisibility(View.INVISIBLE);
+                if (y < height)
+                {
+                    int cameras = camera.getNumberOfCameras();
+                    id = (id + 1) % cameras;
+                    recreate();
+                }
 
                 else
-                    histogram.setVisibility(View.VISIBLE);
-            }
+                {
+                    if (histogram.getVisibility() == View.VISIBLE)
+                        histogram.setVisibility(View.INVISIBLE);
+
+                    else
+                        histogram.setVisibility(View.VISIBLE);
+                }
+                break;
+ 
+            case Configuration.ORIENTATION_LANDSCAPE:
+                int width = histogram.getWidth();
+                float x = event.getX();
+
+                if (x < width / 2)
+                {
+                    int cameras = camera.getNumberOfCameras();
+                    id = (id + 1) % cameras;
+                    recreate();
+                }
+
+                else
+                {
+                    if (histogram.getVisibility() == View.VISIBLE)
+                        histogram.setVisibility(View.INVISIBLE);
+
+                    else
+                        histogram.setVisibility(View.VISIBLE);
+                }
+                break;
+           }
         }
 
         return true;
