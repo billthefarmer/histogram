@@ -96,7 +96,10 @@ public class CameraActivity extends Activity
             camera.startPreview();
         }
 
-        catch (Exception e) {}
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override

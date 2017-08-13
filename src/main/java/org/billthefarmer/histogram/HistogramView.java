@@ -25,6 +25,7 @@ package org.billthefarmer.histogram;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -48,6 +49,7 @@ public class HistogramView extends View
     private Paint paint;
     private Handler handler;
     private Converter converter;
+    private Configuration config;
 
     private RectF rect;
 
@@ -75,6 +77,8 @@ public class HistogramView extends View
     {
 	width = w;
 	height = h;
+
+        config = getResources().getConfiguration();
     }
 
     // onDraw
@@ -84,46 +88,53 @@ public class HistogramView extends View
         if (histogram == null)
             return;
 
-        paint.setStrokeWidth(width / histogram.length);
+        if (config.orientation == Configuration.ORIENTATION_PORTRAIT)
+            canvas.drawColor(Color.BLACK);
 
-        float xscale = (float)width / histogram.length;
+        paint.setStrokeWidth(width / (histogram.length * 3 / 4));
+
+        float xscale = (float)width / (histogram.length * 3 / 4);
         float yscale = (float)height / this.max;
 
-        int x = 0;
+        int i = 0, x = 0;
         int max = 0;
         for (int h: histogram)
         {
-            if ((x < 4) || (x > (histogram.length - 5)))
+            if ((i < 4) || (i > (histogram.length - 5)))
             {
-                x++;
+                i++;
+                if ((i % 4) > 3)
+                    x++;
                 continue;
             }
 
             if (max < h)
                 max = h;
 
-            switch (x % 4)
+            float xpos = x * xscale;
+            float ypos = h * yscale;
+
+            switch (i % 4)
             {
             case 0:
                 paint.setColor(Color.RED);
+                x++;
                 break;
 
             case 1:
                 paint.setColor(Color.GREEN);
+                x++;
                 break;
 
             case 2:
                 paint.setColor(Color.BLUE);
+                x++;
                 break;
+            }
 
-            case 3:
-                paint.setColor(Color.WHITE);
-                break;
-           }
-
-            canvas.drawLine(x * xscale, height,
-                            x * xscale, height - h * yscale, paint);
-            x++;
+            canvas.drawLine(xpos, height,
+                            xpos, height - ypos, paint);
+            i++;
         }
 
         this.max = max;
