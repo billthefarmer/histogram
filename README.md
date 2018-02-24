@@ -6,4 +6,12 @@ Android simple image histogram.
 
 ![Histogram](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Histogram-portrait.png)
 
-Touch the screen to switch camera.
+### In portrait
+
+ * Touch the image to switch camera
+ * Touch the histogram to turn it on and off
+
+### In landscape
+
+ * Touch the left side to switch camera
+ * Touch the right side to turn the histogram on and off
