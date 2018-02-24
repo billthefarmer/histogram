@@ -2,4 +2,4 @@
 
 Android simple image histogram
 
-![Editor](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Histogram-landscape.png)
+![Editor](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Histogram.png)
