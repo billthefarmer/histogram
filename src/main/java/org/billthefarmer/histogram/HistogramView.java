@@ -29,7 +29,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -37,7 +36,8 @@ import android.view.View;
 // HistogramView
 @SuppressWarnings("deprecation")
 public class HistogramView extends View
-        implements Camera.PreviewCallback, Handler.Callback {
+    implements android.hardware.Camera.PreviewCallback, Handler.Callback
+{
     static final private String TAG = "HistogramView";
 
     private static final int HISTOGRAM = 0;
@@ -58,7 +58,8 @@ public class HistogramView extends View
     private long count;
 
     // HistogramView
-    public HistogramView(Context context) {
+    public HistogramView(Context context)
+    {
         super(context);
 
         paint = new Paint();
@@ -68,7 +69,8 @@ public class HistogramView extends View
 
     // onSizeChanged
     @Override
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    public void onSizeChanged(int w, int h, int oldw, int oldh)
+    {
         width = w;
         height = h;
 
@@ -77,7 +79,8 @@ public class HistogramView extends View
 
     // onDraw
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas)
+    {
         if (histogram == null)
             return;
 
@@ -91,8 +94,10 @@ public class HistogramView extends View
 
         int i = 0, x = 0;
         int max = 0;
-        for (int h : histogram) {
-            if ((i < 4) || (i > (histogram.length - 5))) {
+        for (int h : histogram)
+        {
+            if ((i < 4) || (i > (histogram.length - 5)))
+            {
                 i++;
                 continue;
             }
@@ -103,25 +108,26 @@ public class HistogramView extends View
             float xpos = x * xscale;
             float ypos = h * yscale;
 
-            switch (i % 4) {
-                case 0:
-                    paint.setColor(Color.RED);
-                    x++;
-                    break;
+            switch (i % 4)
+            {
+            case 0:
+                paint.setColor(Color.RED);
+                x++;
+                break;
 
-                case 1:
-                    paint.setColor(Color.GREEN);
-                    x++;
-                    break;
+            case 1:
+                paint.setColor(Color.GREEN);
+                x++;
+                break;
 
-                case 2:
-                    paint.setColor(Color.BLUE);
-                    x++;
-                    break;
+            case 2:
+                paint.setColor(Color.BLUE);
+                x++;
+                break;
             }
 
             canvas.drawLine(xpos, height,
-                    xpos, height - ypos, paint);
+                            xpos, height - ypos, paint);
             i++;
         }
 
@@ -129,19 +135,24 @@ public class HistogramView extends View
     }
 
     @Override
-    public void onPreviewFrame(byte[] data, Camera camera) {
-        if (data != null) {
-            if (count++ % 10 == 0) {
-                Camera.Size size = camera.getParameters().getPreviewSize();
+    public void onPreviewFrame(byte[] data, android.hardware.Camera camera)
+    {
+        if (data != null)
+        {
+            if (count++ % 10 == 0)
+            {
+                android.hardware.Camera.Size size =
+                    camera.getParameters().getPreviewSize();
                 Message message = handler.obtainMessage(HISTOGRAM, size.width,
-                        size.height, data);
+                                                        size.height, data);
                 message.sendToTarget();
             }
         }
     }
 
     @Override
-    public boolean handleMessage(Message message) {
+    public boolean handleMessage(Message message)
+    {
         // process incoming messages here
         int width = message.arg1;
         int height = message.arg2;

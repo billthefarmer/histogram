@@ -31,7 +31,8 @@ import android.renderscript.ScriptIntrinsicHistogram;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.renderscript.Type;
 
-public class Converter {
+public class Converter
+{
     static final private String TAG = "Converter";
 
     private RenderScript rs;
@@ -45,23 +46,26 @@ public class Converter {
     private byte[] pixels;
     private int[] hist;
 
-    public Converter(Context context) {
+    public Converter(Context context)
+    {
         rs = RenderScript.create(context);
         si = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs));
         hi = ScriptIntrinsicHistogram.create(rs, Element.U8_4(rs));
     }
 
-    public byte[] convertToRGB(byte[] yuv, int width, int height) {
+    public byte[] convertToRGB(byte[] yuv, int width, int height)
+    {
         int size = (width * height * 4);
 
-        if (yuvIn == null || pixels.length != size) {
+        if (yuvIn == null || pixels.length != size)
+        {
             Type.Builder yuvType = new Type.Builder(rs, Element.U8(rs))
-                    .setX(yuv.length);
+            .setX(yuv.length);
             yuvIn = Allocation.createTyped(rs, yuvType.create());
 
             Type.Builder rgbaType = new Type.Builder(rs, Element.RGBA_8888(rs))
-                    .setX(width)
-                    .setY(height);
+            .setX(width)
+            .setY(height);
             rgbOut = Allocation.createTyped(rs, rgbaType.create());
             pixels = new byte[size];
         }
@@ -74,17 +78,19 @@ public class Converter {
         return pixels;
     }
 
-    public int[] histogram(byte[] rgb, int width, int height) {
+    public int[] histogram(byte[] rgb, int width, int height)
+    {
         int size = (width * height * 4);
 
-        if (rgbIn == null || rgbIn.getBytesSize() != size) {
+        if (rgbIn == null || rgbIn.getBytesSize() != size)
+        {
             Type.Builder rgbaType = new Type.Builder(rs, Element.RGBA_8888(rs))
-                    .setX(width)
-                    .setY(height);
+            .setX(width)
+            .setY(height);
             rgbIn = Allocation.createTyped(rs, rgbaType.create());
 
             Type.Builder uintType = new Type.Builder(rs, Element.U32_4(rs))
-                    .setX(256);
+            .setX(256);
             intOut = Allocation.createTyped(rs, uintType.create());
             hist = new int[256 * 4];
         }

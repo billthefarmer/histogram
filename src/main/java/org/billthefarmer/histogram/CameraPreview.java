@@ -25,7 +25,6 @@ package org.billthefarmer.histogram;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.hardware.Camera;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
@@ -37,13 +36,15 @@ import java.util.List;
 // CameraPreview
 @SuppressWarnings("deprecation")
 public class CameraPreview extends SurfaceView
-        implements SurfaceHolder.Callback {
+    implements SurfaceHolder.Callback
+{
     static final private String TAG = "CameraPreview";
 
     private HistogramView histogram;
-    private Camera camera;
+    private android.hardware.Camera camera;
 
-    public CameraPreview(Context context) {
+    public CameraPreview(Context context)
+    {
         super(context);
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -51,47 +52,59 @@ public class CameraPreview extends SurfaceView
         holder.addCallback(this);
     }
 
-    public void setCamera(Camera camera) {
+    public void setCamera(android.hardware.Camera camera)
+    {
         this.camera = camera;
     }
 
-    public void setHistogramView(HistogramView histogram) {
+    public void setHistogramView(HistogramView histogram)
+    {
         this.histogram = histogram;
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void surfaceCreated(SurfaceHolder holder)
+    {
         // The Surface has been created, now tell the camera where to
         // draw the preview.
-        try {
+        try
+        {
             camera.setPreviewDisplay(holder);
             camera.setPreviewCallback(histogram);
             camera.startPreview();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Log.d(TAG, "Error setting camera preview: " + e.getMessage());
         }
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(SurfaceHolder holder)
+    {
         // empty. Take care of releasing the Camera preview in your
         // activity.
     }
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
+    {
         // If your preview can change or rotate, take care of those
         // events here.  Make sure to stop the preview before resizing
         // or reformatting it.
 
-        if (holder.getSurface() == null) {
+        if (holder.getSurface() == null)
+        {
             // preview surface does not exist
             return;
         }
 
         // stop preview before making changes
-        try {
+        try
+        {
             camera.stopPreview();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             // ignore: tried to stop a non-existent preview
         }
 
@@ -100,47 +113,54 @@ public class CameraPreview extends SurfaceView
 
         Configuration config = getResources().getConfiguration();
 
-        Camera.Parameters cameraParams = camera.getParameters();
+        android.hardware.Camera.Parameters cameraParams =
+            camera.getParameters();
 
         List<String> modes = cameraParams.getSupportedFocusModes();
-        if (modes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+        if (modes.contains(android.hardware.Camera.Parameters
+                           .FOCUS_MODE_CONTINUOUS_PICTURE))
             cameraParams
-                    .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            .setFocusMode(android.hardware.Camera.Parameters
+                          .FOCUS_MODE_CONTINUOUS_PICTURE);
 
         cameraParams.setPreviewSize(640, 480);
         camera.setParameters(cameraParams);
 
-        Camera.Size size = cameraParams.getPreviewSize();
+        android.hardware.Camera.Size size = cameraParams.getPreviewSize();
         FrameLayout.LayoutParams params =
-                (FrameLayout.LayoutParams) getLayoutParams();
+            (FrameLayout.LayoutParams) getLayoutParams();
 
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                params.height = w * size.width / size.height;
-                params.gravity = Gravity.TOP;
-                setLayoutParams(params);
+        switch (config.orientation)
+        {
+        case Configuration.ORIENTATION_PORTRAIT:
+            params.height = w * size.width / size.height;
+            params.gravity = Gravity.TOP;
+            setLayoutParams(params);
 
-                int height = params.height;
-                params = (FrameLayout.LayoutParams)
-                        histogram.getLayoutParams();
-                params.height = h - height;
-                params.gravity = Gravity.BOTTOM;
-                histogram.setLayoutParams(params);
-                break;
+            int height = params.height;
+            params = (FrameLayout.LayoutParams)
+                     histogram.getLayoutParams();
+            params.height = h - height;
+            params.gravity = Gravity.BOTTOM;
+            histogram.setLayoutParams(params);
+            break;
 
-            case Configuration.ORIENTATION_LANDSCAPE:
-                params.width = w * size.height / size.width;
-                params.gravity = Gravity.CENTER;
-                setLayoutParams(params);
-                break;
+        case Configuration.ORIENTATION_LANDSCAPE:
+            params.width = w * size.height / size.width;
+            params.gravity = Gravity.CENTER;
+            setLayoutParams(params);
+            break;
         }
 
         // start preview with new settings
-        try {
+        try
+        {
             camera.setPreviewDisplay(holder);
             camera.setPreviewCallback(histogram);
             camera.startPreview();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
     }

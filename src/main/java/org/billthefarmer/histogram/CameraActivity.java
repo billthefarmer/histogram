@@ -25,7 +25,6 @@ package org.billthefarmer.histogram;
 
 import android.app.Activity;
 import android.content.res.Configuration;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,18 +32,20 @@ import android.view.ViewGroup;
 
 // CameraActivity
 @SuppressWarnings("deprecation")
-public class CameraActivity extends Activity {
+public class CameraActivity extends Activity
+{
     static final private String TAG = "CameraActivity";
 
     static final private String ID = "id";
 
     private int id;
-    private Camera camera;
+    private android.hardware.Camera camera;
     private CameraPreview preview;
     private HistogramView histogram;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         // Create our Preview view and set it as the content of our
@@ -61,99 +62,118 @@ public class CameraActivity extends Activity {
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
 
         // Create an instance of Camera
-        camera = Camera.open(id);
+        camera = android.hardware.Camera.open(id);
 
         Configuration config = getResources().getConfiguration();
 
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                // Orient the camera
-                camera.setDisplayOrientation(90);
-                break;
+        switch (config.orientation)
+        {
+        case Configuration.ORIENTATION_PORTRAIT:
+            // Orient the camera
+            camera.setDisplayOrientation(90);
+            break;
         }
 
         // Set preview camera
         preview.setCamera(camera);
 
         preview
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_LOW_PROFILE |
-                        View.SYSTEM_UI_FLAG_FULLSCREEN);
-        try {
+        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                               View.SYSTEM_UI_FLAG_LOW_PROFILE |
+                               View.SYSTEM_UI_FLAG_FULLSCREEN);
+        try
+        {
             camera.startPreview();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
 
         // Because the Camera object is a shared resource, it's very
         // important to release it when the activity is paused.
-
-        if (camera != null) {
-            try {
+        if (camera != null)
+        {
+            try
+            {
                 camera.setPreviewCallback(null);
                 camera.stopPreview();
                 camera.release();
                 camera = null;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
             }
         }
     }
 
     // onSaveInstanceState
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState)
+    {
         super.onSaveInstanceState(outState);
         outState.putInt(ID, id);
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event)
+    {
         Configuration config = getResources().getConfiguration();
 
         int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
-            switch (config.orientation) {
-                case Configuration.ORIENTATION_PORTRAIT:
-                    int height = preview.getHeight();
-                    float y = event.getY();
+        if (action == MotionEvent.ACTION_DOWN)
+        {
+            switch (config.orientation)
+            {
+            case Configuration.ORIENTATION_PORTRAIT:
+                int height = preview.getHeight();
+                float y = event.getY();
 
-                    if (y < height) {
-                        int cameras = Camera.getNumberOfCameras();
-                        id = (id + 1) % cameras;
-                        recreate();
-                    } else {
-                        if (histogram.getVisibility() == View.VISIBLE)
-                            histogram.setVisibility(View.INVISIBLE);
+                if (y < height)
+                {
+                    int cameras = android.hardware.Camera.getNumberOfCameras();
+                    id = (id + 1) % cameras;
+                    recreate();
+                }
+                else
+                {
+                    if (histogram.getVisibility() == View.VISIBLE)
+                        histogram.setVisibility(View.INVISIBLE);
 
-                        else
-                            histogram.setVisibility(View.VISIBLE);
-                    }
-                    break;
+                    else
+                        histogram.setVisibility(View.VISIBLE);
+                }
+                break;
 
-                case Configuration.ORIENTATION_LANDSCAPE:
-                    int width = histogram.getWidth();
-                    float x = event.getX();
+            case Configuration.ORIENTATION_LANDSCAPE:
+                int width = histogram.getWidth();
+                float x = event.getX();
 
-                    if (x < width / 2) {
-                        int cameras = Camera.getNumberOfCameras();
-                        id = (id + 1) % cameras;
-                        recreate();
-                    } else {
-                        if (histogram.getVisibility() == View.VISIBLE)
-                            histogram.setVisibility(View.INVISIBLE);
+                if (x < width / 2)
+                {
+                    int cameras = android.hardware.Camera.getNumberOfCameras();
+                    id = (id + 1) % cameras;
+                    recreate();
+                }
+                else
+                {
+                    if (histogram.getVisibility() == View.VISIBLE)
+                        histogram.setVisibility(View.INVISIBLE);
 
-                        else
-                            histogram.setVisibility(View.VISIBLE);
-                    }
-                    break;
+                    else
+                        histogram.setVisibility(View.VISIBLE);
+                }
+                break;
             }
         }
 
