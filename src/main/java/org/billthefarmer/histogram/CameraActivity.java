@@ -72,8 +72,8 @@ public class CameraActivity extends Activity
 
         FrameLayout.LayoutParams params =
             (FrameLayout.LayoutParams) button.getLayoutParams();
-        params.height = BUTTON_SIZE;
-        params.width = BUTTON_SIZE;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.CENTER_VERTICAL | Gravity.END;
         params.leftMargin = MARGIN;
         params.rightMargin = MARGIN;
