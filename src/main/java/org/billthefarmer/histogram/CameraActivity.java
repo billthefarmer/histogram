@@ -25,6 +25,7 @@ package org.billthefarmer.histogram;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,8 +42,8 @@ public class CameraActivity extends Activity
     static final private String TAG = "CameraActivity";
     static final private String ID = "id";
 
-    static final private int BUTTON_SIZE = 56;
     static final private int MARGIN = 56;
+    static final private int ELEVATION = 24;
 
     private int id;
     private android.hardware.Camera camera;
@@ -66,6 +67,8 @@ public class CameraActivity extends Activity
         preview.setHistogramView(histogram);
 
         button = new ImageButton(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            button.setElevation(ELEVATION);
         button.setImageResource(R.drawable.ic_action_switch_camera);
         button.setBackgroundResource(R.drawable.ic_button_background);
         parent.addView(button);
