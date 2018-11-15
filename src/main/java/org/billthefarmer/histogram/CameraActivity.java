@@ -26,22 +26,29 @@ package org.billthefarmer.histogram;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 // CameraActivity
 @SuppressWarnings("deprecation")
 public class CameraActivity extends Activity
 {
     static final private String TAG = "CameraActivity";
-
     static final private String ID = "id";
+
+    static final private int BUTTON_SIZE = 56;
+    static final private int MARGIN = 56;
 
     private int id;
     private android.hardware.Camera camera;
     private CameraPreview preview;
     private HistogramView histogram;
+    private ImageButton button;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -52,10 +59,32 @@ public class CameraActivity extends Activity
         // activity.
         preview = new CameraPreview(this);
         setContentView(preview);
+
         histogram = new HistogramView(this);
         ViewGroup parent = (ViewGroup) preview.getParent();
         parent.addView(histogram);
         preview.setHistogramView(histogram);
+
+        button = new ImageButton(this);
+        button.setImageResource(R.drawable.ic_action_switch_camera);
+        button.setBackgroundResource(R.drawable.ic_button_background);
+        parent.addView(button);
+
+        FrameLayout.LayoutParams params =
+            (FrameLayout.LayoutParams) button.getLayoutParams();
+        params.height = BUTTON_SIZE;
+        params.width = BUTTON_SIZE;
+        params.gravity = Gravity.CENTER_VERTICAL | Gravity.END;
+        params.leftMargin = MARGIN;
+        params.rightMargin = MARGIN;
+        button.setLayoutParams(params);
+
+        button.setOnClickListener(v ->
+            {
+                int cameras = android.hardware.Camera.getNumberOfCameras();
+                id = (id + 1) % cameras;
+                recreate();
+            });
 
         if (savedInstanceState != null)
             id = savedInstanceState.getInt(ID);
@@ -128,53 +157,14 @@ public class CameraActivity extends Activity
 
     public boolean onTouchEvent(MotionEvent event)
     {
-        Configuration config = getResources().getConfiguration();
-
         int action = event.getAction();
         if (action == MotionEvent.ACTION_DOWN)
         {
-            switch (config.orientation)
-            {
-            case Configuration.ORIENTATION_PORTRAIT:
-                int height = preview.getHeight();
-                float y = event.getY();
+            if (histogram.getVisibility() == View.VISIBLE)
+                histogram.setVisibility(View.INVISIBLE);
 
-                if (y < height)
-                {
-                    int cameras = android.hardware.Camera.getNumberOfCameras();
-                    id = (id + 1) % cameras;
-                    recreate();
-                }
-                else
-                {
-                    if (histogram.getVisibility() == View.VISIBLE)
-                        histogram.setVisibility(View.INVISIBLE);
-
-                    else
-                        histogram.setVisibility(View.VISIBLE);
-                }
-                break;
-
-            case Configuration.ORIENTATION_LANDSCAPE:
-                int width = histogram.getWidth();
-                float x = event.getX();
-
-                if (x < width / 2)
-                {
-                    int cameras = android.hardware.Camera.getNumberOfCameras();
-                    id = (id + 1) % cameras;
-                    recreate();
-                }
-                else
-                {
-                    if (histogram.getVisibility() == View.VISIBLE)
-                        histogram.setVisibility(View.INVISIBLE);
-
-                    else
-                        histogram.setVisibility(View.VISIBLE);
-                }
-                break;
-            }
+            else
+                histogram.setVisibility(View.VISIBLE);
         }
 
         return true;
