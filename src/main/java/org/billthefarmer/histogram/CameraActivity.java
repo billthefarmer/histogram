@@ -40,12 +40,14 @@ import android.widget.ImageButton;
 public class CameraActivity extends Activity
 {
     static final private String TAG = "CameraActivity";
+    static final private String HIST = "hist";
     static final private String ID = "id";
 
     static final private int MARGIN = 56;
     static final private int ELEVATION = 24;
 
     private int id;
+    private boolean hist = true;
     private android.hardware.Camera camera;
     private CameraPreview preview;
     private HistogramView histogram;
@@ -82,15 +84,43 @@ public class CameraActivity extends Activity
         params.rightMargin = MARGIN;
         button.setLayoutParams(params);
 
+        if (savedInstanceState != null)
+        {
+            id = savedInstanceState.getInt(ID);
+            hist = savedInstanceState.getBoolean(HIST);
+            if (!hist)
+                histogram.setVisibility(View.INVISIBLE);
+        }
+
+        preview.setOnClickListener(v ->
+            {
+                hist = !hist;
+
+                if (!hist)
+                    histogram.setVisibility(View.INVISIBLE);
+
+                else
+                    histogram.setVisibility(View.VISIBLE);
+            });
+
+
+        histogram.setOnClickListener(v ->
+            {
+                hist = !hist;
+
+                if (!hist)
+                    histogram.setVisibility(View.INVISIBLE);
+
+                else
+                    histogram.setVisibility(View.VISIBLE);
+            });
+
         button.setOnClickListener(v ->
             {
                 int cameras = android.hardware.Camera.getNumberOfCameras();
                 id = (id + 1) % cameras;
                 recreate();
             });
-
-        if (savedInstanceState != null)
-            id = savedInstanceState.getInt(ID);
     }
 
     @Override
@@ -155,21 +185,19 @@ public class CameraActivity extends Activity
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+        outState.putBoolean(HIST, hist);
         outState.putInt(ID, id);
     }
 
-    public boolean onTouchEvent(MotionEvent event)
+    // onRestoreInstanceState
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState)
     {
-        int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN)
-        {
-            if (histogram.getVisibility() == View.VISIBLE)
-                histogram.setVisibility(View.INVISIBLE);
+        super.onRestoreInstanceState(savedInstanceState);
 
-            else
-                histogram.setVisibility(View.VISIBLE);
-        }
-
-        return true;
+        id = savedInstanceState.getInt(ID);
+        hist = savedInstanceState.getBoolean(HIST);
+        if (!hist)
+            histogram.setVisibility(View.INVISIBLE);
     }
 }
